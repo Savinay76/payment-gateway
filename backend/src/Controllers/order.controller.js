@@ -53,3 +53,35 @@ exports.createOrder = async (req, res) => {
     created_at: order.created_at
   });
 };
+exports.getOrder = async (req, res) => {
+  const { order_id } = req.params;
+
+  const result = await db.query(
+    `SELECT * FROM orders WHERE id=$1 AND merchant_id=$2`,
+    [order_id, req.merchant.id]
+  );
+
+  if (result.rowCount === 0) {
+    return res.status(404).json({
+      error: {
+        code: "NOT_FOUND_ERROR",
+        description: "Order not found"
+      }
+    });
+  }
+
+  const order = result.rows[0];
+
+  return res.status(200).json({
+    id: order.id,
+    merchant_id: order.merchant_id,
+    amount: order.amount,
+    currency: order.currency,
+    receipt: order.receipt,
+    notes: order.notes || {},
+    status: order.status,
+    created_at: order.created_at,
+    updated_at: order.updated_at
+  });
+};
+
