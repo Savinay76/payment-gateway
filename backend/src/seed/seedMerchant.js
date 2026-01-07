@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-(async () => {
+module.exports = async function seedMerchant() {
   const check = await db.query(
     "SELECT 1 FROM merchants WHERE email=$1",
     ["test@example.com"]
@@ -21,4 +21,4 @@ const db = require("../config/db");
     `);
     console.log("✅ Test merchant seeded");
   }
-})();
+};
