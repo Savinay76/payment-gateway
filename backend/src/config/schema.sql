@@ -78,3 +78,10 @@ CREATE INDEX IF NOT EXISTS idx_payments_order_id
 CREATE INDEX IF NOT EXISTS idx_payments_status
   ON payments(status);
 
+CREATE TABLE IF NOT EXISTS refunds (
+  id TEXT PRIMARY KEY,
+  payment_id TEXT REFERENCES payments(id),
+  amount INT,
+  status TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);

@@ -85,3 +85,32 @@ exports.getOrder = async (req, res) => {
   });
 };
 
+// Public endpoint for checkout page (no auth required)
+exports.getOrderPublic = async (req, res) => {
+  const { order_id } = req.params;
+
+  const result = await db.query(
+    `SELECT id, amount, currency, status FROM orders WHERE id=$1`,
+    [order_id]
+  );
+
+  if (result.rowCount === 0) {
+    return res.status(404).json({
+      error: {
+        code: "NOT_FOUND_ERROR",
+        description: "Order not found"
+      }
+    });
+  }
+
+  const order = result.rows[0];
+
+  // Only return basic info for checkout page
+  return res.status(200).json({
+    id: order.id,
+    amount: order.amount,
+    currency: order.currency,
+    status: order.status
+  });
+};
+
